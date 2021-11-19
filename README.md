@@ -1,7 +1,7 @@
-### Check raw files
+### Check for dump files
 
 ```
-$od -t x1 -A n boot_sec.bin
+$ od -t x1 -A n boot_sect.bin
 ```
 
 ### Compile the file
@@ -12,7 +12,30 @@ $ nasm boot_sect.asm -f bin -o boot_sect.bin
 
 ## Create ISO
 truncate boot_sect.bin -s 1200K   
-mkisofs -o $HOME/Downloads/unix/boot_sect.iso -b boot_sect.bin /$HOME/Downloads/unix
+mkisofs -o /boot_sect.iso -b boot_sect.bin /
 
 ### Run with QEMU
 qemu-system-x86_64 boot_sect.bin
+
+# Examples folder
+Contains c code to help understand functions
+
+## Compile & dump
+```c
+gcc -ffreestanding -c examples/my_function.c -o examples/my_function.o 
+objdump -d examples/my_function.o
+
+```
+
+To output raw machine code into a file basic.bin, we can use the following command
+
+```
+ld -o basic.bin -Ttext 0x0 --oformat binary basic.o
+```
+
+To
+see what machine code the compiler actually generated from our C source code, run the
+following command:
+```
+ndisasm -b 32 basic.bin > basic.dis
+```

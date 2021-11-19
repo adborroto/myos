@@ -1,28 +1,42 @@
 org 0x7c00
 
-mov bp , 0x8000 ; define stask
+mov bp , 0x9000 ; Set the stask
 mov sp , bp
 
-start:
-	mov bx, BOOTING_MSG
-	call print_string
+mov bx, MSG_REAL_MODE
+call print_string
+call switch_to_pm
+jmp boot_hang
 
+%include "print_string.asm"
+%include "gdt.asm"
+%include "print_string_pm.asm"
+%include "disk_load.asm"
+%include "switch_to_pm.asm"
+
+boot_drive:
 	mov bx , 0x9000
-
 	mov dh , 5
 	mov dl , [ BOOT_DRIVE ]
 	call disk_load
 
+[bits 32]
+boot_pm:
+	mov ebx, MSG_PROTECT_MODE
+	call print_string_pm
+
+boot_hang:
 	jmp $
 
 
-%include "print_string.asm"
-%include "disk_load.asm"
 
-vars:
-	BOOT_DRIVE: db 0
-	BOOTING_MSG: db "Booting OS...", 0
+; Gloval variables
+BOOT_DRIVE: db 0
+BOOTING_MSG: db "Booting OS...", 0
+MSG_REAL_MODE: db "Starting real mode...", 0
+MSG_PROTECT_MODE: db "Starting protect mode...", 0
 
-end:
-	times 510-($-$$) db 0   ;填充程序到512个字节
-	dw 0xaa55 
+
+; Bootsector padding
+times 510-($-$$) db 0 
+dw 0xaa55 
