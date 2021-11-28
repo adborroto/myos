@@ -17,9 +17,6 @@ mkisofs -o /boot_sect.iso -b boot_sect.bin /
 ### Run with QEMU
 qemu-system-x86_64 boot_sect.bin
 
-# Examples folder
-Contains c code to help understand functions
-
 ## Compile & dump
 ```c
 gcc -ffreestanding -c examples/my_function.c -o examples/my_function.o 
@@ -36,6 +33,16 @@ ld -o basic.bin -Ttext 0x0 --oformat binary basic.o
 To
 see what machine code the compiler actually generated from our C source code, run the
 following command:
+
 ```
 ndisasm -b 32 basic.bin > basic.dis
+```
+
+## Compile kernel
+
+Compile this to raw binary as follows:
+
+```
+$ gcc -ffreestanding -c kernel.c -o kernel.o
+$ ld -o kernel.bin -Ttext 0x1000 kernel.o --oformat binary
 ```
