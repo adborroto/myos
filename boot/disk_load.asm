@@ -16,6 +16,7 @@ disk_load :
     pop dx
     cmp dh , al
     jne disk_error
+   
     ret 
 
 disk_error :

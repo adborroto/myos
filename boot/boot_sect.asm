@@ -26,6 +26,8 @@ load_kernel:
 	mov dh , 15
 	mov dl , [ BOOT_DRIVE ]
 	call disk_load
+
+
 	ret
 
 [bits 32]

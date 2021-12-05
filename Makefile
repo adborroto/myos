@@ -1,4 +1,4 @@
-all: kernel.bin boot_sect.bin
+all: kernel.bin boot_sect.bin kernel.iso
 	cat build/boot_sect.bin build/kernel.bin > build/os.bin
 # Build the kernel binary
 kernel.bin : kernel_entry.o kernel.o
@@ -14,6 +14,10 @@ kernel_entry.o : boot/kernel_entry.asm
 
 boot_sect.bin : boot/boot_sect.asm
 	nasm boot/boot_sect.asm -f bin -o build/boot_sect.bin
+
+kernel.iso: 
+	truncate build/kernel.bin -s 1200K  
+	mkisofs -o build/os.iso -b kernel.bin build/
 
 clean:
 	rm -f **/*.bin **/*.o *.o *.bin
